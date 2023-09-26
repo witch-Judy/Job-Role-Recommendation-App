@@ -62,8 +62,6 @@ manualQuestionMap2021 = {
     "Q32": "Q35",
     "Q34": "Q36",
     "Q37": "Q38",
-    "Q38": "Q39",
-    "Q38": "Q40",
     "Q12": "Q42"
 }
 
@@ -76,13 +74,27 @@ manualQuestionMap2020 = {
     "Q29": "Q35",
     "Q31": "Q36",
     "Q33": "Q38",
-    "Q35": "Q39",
-    "Q35": "Q40",
     "Q12": "Q42"
 }
 
-number_col = ["Q29_yearly compensation", "Q30_ML/CC service spent"]
+number_col = ["Q29_yearly compensation", "Q30_ML/CC service spent", "Q11_coding years", "Q16_ML years",
+              "Q25_company size", "Q26_DS number", "Q43_TPU use freq"]
 money_col = ["Q29_yearly compensation", "Q30_ML/CC service spent"]
+year_col = ["Q11_coding years", "Q16_ML years"]
+employee_col = ["Q25_company size", "Q26_DS number"]
+freq_col = ["Q43_TPU use freq"]
+
 Q29_max_option = ["> 500000", ">1000000"]
 Q30_min_option = ["0 (USD)"]
 Q30_max_option = ["100000 or more (USD)"]
+Q11_min_option = ["< 1"]
+Q11_max_option = ["20+"]
+Q11_none_option = ["I have never written code"]
+Q16_min_option = ["Under 1"]
+Q16_max_option = ["20 or more"]
+Q16_none_option = ["I do not use machine learning methods"]
+Q25_max_option = ["10000 or more"]
+Q26_max_option = ["20+"]
+Q43_min_option = ["Once"]
+Q43_max_option = ["More than 25"]
+Q43_none_option = ["Never"]
