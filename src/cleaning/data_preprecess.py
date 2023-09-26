@@ -27,6 +27,8 @@ def data_preprocess():
     data = merge_data(data2020, data2021, data2022)
     # filter student or unemployed answer (only use professional data)
     filter_unprofessional(data)
+    # add min and max column for columns' value is a range of number
+    number_col_addMinMax(data)
     # todo: duration time (Get rid of those who take too long or too short time to complete the questionnaire)
     # todo: young age <-> high educational degree
     # todo: age <-> programming / machine learning experience
@@ -103,6 +105,14 @@ def match_question(question2020, question2021, question2022):
             if (maxRatio <= diffRatio and diffRatio > 0.9):
                 maxRatio = diffRatio
                 questionMap2020[j] = i
+
+    # manually match the question that can not be automatically match through string comparison method (2021 <->2022)
+    for key in constant.manualQuestionMap2021:
+        questionMap2021[key] = constant.manualQuestionMap2021[key]
+
+    # manually match the question that can not be automatically match through string comparison method (2020 <->2022)
+    for key in constant.manualQuestionMap2020:
+        questionMap2020[key] = constant.manualQuestionMap2020[key]
 
     return question2020Mul, question2021Mul, question2022Mul, questionMap2021, questionMap2020
 
@@ -209,3 +219,30 @@ def filter_unprofessional(data):
     # remove students and currently not employed
     data = data[data["Q23_role title"] != 'Currently not employed']
     data = data[data["Q23_role title"] != 'Student']
+
+def number_col_addMinMax(data):
+    # add new column for columns about "number": _min and _max (category: money)
+    for i in range(len(constant.number_col)):
+        data[constant.number_col[i]+"_min"] = data.loc[:, constant.number_col[i]]
+        data[constant.number_col[i]+"_max"] = data.loc[:, constant.number_col[i]]
+
+    # delete dollar sign and thousandths (ex. $1,000 => 1000)
+    for i in range(len(constant.money_col)):
+        data[constant.money_col[i]+"_min"].replace(["\$", ","], "", inplace=True, regex=True)
+        data[constant.money_col[i]+"_max"].replace(["\$", ","], "", inplace=True, regex=True)
+
+    # use dash sign to find the min value and max value of the range (ex. 0-999 => min=0;max=999;)
+    for i in range(len((constant.number_col))):
+        data[constant.number_col[i]+"_min"].replace("-[0-9]+", "", inplace=True, regex=True)
+        data[constant.number_col[i]+"_max"].replace("[0-9]+-", "", inplace=True, regex=True)
+
+    # handle irregular edgy case for Q29
+    data["Q29_yearly compensation_min"].replace(">", "", inplace=True, regex=True)
+    data["Q29_yearly compensation_min"] = data["Q29_yearly compensation_min"].str.strip()
+    data["Q29_yearly compensation_max"].replace(constant.Q29_max_option, "inf", inplace=True)
+
+    # handle irregular edgy case for Q30
+    data["Q30_ML/CC service spent_min"].replace(constant.Q30_min_option, "0", inplace=True)
+    data["Q30_ML/CC service spent_min"].replace(constant.Q30_max_option, "100000", inplace=True)
+    data["Q30_ML/CC service spent_max"].replace(constant.Q30_min_option, "0", inplace=True)
+    data["Q30_ML/CC service spent_max"].replace(constant.Q30_max_option, "inf", inplace=True)

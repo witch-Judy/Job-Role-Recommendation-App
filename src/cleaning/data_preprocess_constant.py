@@ -51,3 +51,38 @@ dataColNameMap = {
     "Q43":"TPU use freq",
     "Q44":"DS media"
 }
+
+manualQuestionMap2021 = {
+    "Q10": "Q14",
+    "Q14": "Q15",
+    "Q26": "Q30",
+    "Q27": "Q31",
+    "Q29": "Q33",
+    "Q30": "Q34",
+    "Q32": "Q35",
+    "Q34": "Q36",
+    "Q37": "Q38",
+    "Q38": "Q39",
+    "Q38": "Q40",
+    "Q12": "Q42"
+}
+
+manualQuestionMap2020 = {
+    "Q10": "Q14",
+    "Q14": "Q15",
+    "Q25": "Q30",
+    "Q26": "Q31",
+    "Q27": "Q33",
+    "Q29": "Q35",
+    "Q31": "Q36",
+    "Q33": "Q38",
+    "Q35": "Q39",
+    "Q35": "Q40",
+    "Q12": "Q42"
+}
+
+number_col = ["Q29_yearly compensation", "Q30_ML/CC service spent"]
+money_col = ["Q29_yearly compensation", "Q30_ML/CC service spent"]
+Q29_max_option = ["> 500000", ">1000000"]
+Q30_min_option = ["0 (USD)"]
+Q30_max_option = ["100000 or more (USD)"]
