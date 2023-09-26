@@ -231,8 +231,23 @@ def number_col_addMinMax(data):
         data[constant.money_col[i]+"_min"].replace(["\$", ","], "", inplace=True, regex=True)
         data[constant.money_col[i]+"_max"].replace(["\$", ","], "", inplace=True, regex=True)
 
+    # delete "year" and "years" (ex. 2-5 years => 2-5)
+    for i in range(len(constant.year_col)):
+        data[constant.year_col[i]+"_min"].replace([" (year.|year)"], "", inplace=True, regex=True)
+        data[constant.year_col[i]+"_max"].replace([" (year.|year)"], "", inplace=True, regex=True)
+
+    # delete "employees" and thousandths
+    for i in range(len(constant.employee_col)):
+        data[constant.employee_col[i]+"_min"].replace([" employees", ","], "", inplace=True, regex=True)
+        data[constant.employee_col[i]+"_max"].replace([" employees", ","], "", inplace=True, regex=True)
+
+    # delete "times"
+    for i in range(len(constant.freq_col)):
+        data[constant.freq_col[i]+"_min"].replace([" times"], "", inplace=True, regex=True)
+        data[constant.freq_col[i]+"_max"].replace([" times"], "", inplace=True, regex=True)
+
     # use dash sign to find the min value and max value of the range (ex. 0-999 => min=0;max=999;)
-    for i in range(len((constant.number_col))):
+    for i in range(len(constant.number_col)):
         data[constant.number_col[i]+"_min"].replace("-[0-9]+", "", inplace=True, regex=True)
         data[constant.number_col[i]+"_max"].replace("[0-9]+-", "", inplace=True, regex=True)
 
@@ -246,3 +261,35 @@ def number_col_addMinMax(data):
     data["Q30_ML/CC service spent_min"].replace(constant.Q30_max_option, "100000", inplace=True)
     data["Q30_ML/CC service spent_max"].replace(constant.Q30_min_option, "0", inplace=True)
     data["Q30_ML/CC service spent_max"].replace(constant.Q30_max_option, "inf", inplace=True)
+
+    # handle irregular edgy case for Q11
+    data["Q11_coding years_min"].replace("\+", "", inplace=True, regex=True)
+    data["Q11_coding years_min"].replace(constant.Q11_min_option, "0", inplace=True)
+    data["Q11_coding years_min"].replace(constant.Q11_none_option, "0", inplace=True)
+    data["Q11_coding years_max"].replace("< ", "", inplace=True, regex=True)
+    data["Q11_coding years_max"].replace(constant.Q11_max_option, "inf", inplace=True)
+    data["Q11_coding years_max"].replace(constant.Q11_none_option, "0", inplace=True)
+
+    # handle irregular edgy case for Q16
+    data["Q16_ML years_min"].replace(" or more", "", inplace=True, regex=True)
+    data["Q16_ML years_min"].replace(constant.Q16_min_option, "0", inplace=True)
+    data["Q16_ML years_min"].replace(constant.Q16_none_option, "0", inplace=True)
+    data["Q16_ML years_max"].replace("Under ", "", inplace=True, regex=True)
+    data["Q16_ML years_max"].replace(constant.Q16_max_option, "inf", inplace=True)
+    data["Q16_ML years_max"].replace(constant.Q16_none_option, "0", inplace=True)
+
+    # handle irregular edgy case for Q25
+    data["Q25_company size_min"].replace(" or more", "", inplace=True, regex=True)
+    data["Q25_company size_max"].replace(constant.Q25_max_option, "inf", inplace=True)
+
+    # handle irregular edgy case for Q26
+    data["Q26_DS number_min"].replace("\+", "", inplace=True, regex=True)
+    data["Q26_DS number_max"].replace(constant.Q26_max_option, "inf", inplace=True)
+
+    # handle irregular edgy case for Q43
+    data["Q43_TPU use freq_min"].replace("More than ", "", inplace=True, regex=True)
+    data["Q43_TPU use freq_min"].replace(constant.Q43_min_option, "1", inplace=True)
+    data["Q43_TPU use freq_min"].replace(constant.Q43_none_option, "0", inplace=True)
+    data["Q43_TPU use freq_max"].replace(constant.Q43_min_option, "1", inplace=True)
+    data["Q43_TPU use freq_max"].replace(constant.Q43_max_option, "inf", inplace=True)
+    data["Q43_TPU use freq_max"].replace(constant.Q43_none_option, "0", inplace=True)
