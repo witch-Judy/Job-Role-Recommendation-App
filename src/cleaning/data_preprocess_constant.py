@@ -77,13 +77,14 @@ manualQuestionMap2020 = {
     "Q12": "Q42"
 }
 
-number_col = ["Q29_yearly compensation", "Q30_ML/CC service spent", "Q11_coding years", "Q16_ML years",
+number_col = ["Q2_age", "Q29_yearly compensation", "Q30_ML/CC service spent", "Q11_coding years", "Q16_ML years",
               "Q25_company size", "Q26_DS number", "Q43_TPU use freq"]
 money_col = ["Q29_yearly compensation", "Q30_ML/CC service spent"]
 year_col = ["Q11_coding years", "Q16_ML years"]
 employee_col = ["Q25_company size", "Q26_DS number"]
 freq_col = ["Q43_TPU use freq"]
 
+Q2_max_option = ["70+"]
 Q29_max_option = ["> 500000", ">1000000"]
 Q30_min_option = ["0 (USD)"]
 Q30_max_option = ["100000 or more (USD)"]

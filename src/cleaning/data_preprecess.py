@@ -25,13 +25,16 @@ def data_preprocess():
                    questionMap2021, questionMap2020, constant.dataColNameMap)
     # merge three years data
     data = merge_data(data2020, data2021, data2022)
-    # filter student or unemployed answer (only use professional data)
-    filter_unprofessional(data)
     # add min and max column for columns' value is a range of number
     number_col_addMinMax(data)
+    # filter abnormal high educational degree
+    filter_abnormal_degree(data)
+    # filter abnormal experience (condition: max age - min experience years <= 10)
+    filter_abnormal_experience(data)
+
+    # filter student or unemployed answer (only use professional data)
+    # filter_unprofessional(data)
     # todo: duration time (Get rid of those who take too long or too short time to complete the questionnaire)
-    # todo: young age <-> high educational degree
-    # todo: age <-> programming / machine learning experience
 
     return data
 
@@ -213,13 +216,6 @@ def merge_data(data2020, data2021, data2022):
     data = pd.concat([data2020, data2021, data2022], ignore_index=True)
     return data
 
-def filter_unprofessional(data):
-    # remove students
-    data = data[data["Q5_student or not"] != 'No']
-    # remove students and currently not employed
-    data = data[data["Q23_role title"] != 'Currently not employed']
-    data = data[data["Q23_role title"] != 'Student']
-
 def number_col_addMinMax(data):
     # add new column for columns about "number": _min and _max (category: money)
     for i in range(len(constant.number_col)):
@@ -250,6 +246,10 @@ def number_col_addMinMax(data):
     for i in range(len(constant.number_col)):
         data[constant.number_col[i]+"_min"].replace("-[0-9]+", "", inplace=True, regex=True)
         data[constant.number_col[i]+"_max"].replace("[0-9]+-", "", inplace=True, regex=True)
+
+    # handle irregular edgy case for Q2
+    data["Q2_age_min"].replace("\+", "", inplace=True, regex=True)
+    data["Q2_age_max"].replace(constant.Q2_max_option, "inf", inplace=True)
 
     # handle irregular edgy case for Q29
     data["Q29_yearly compensation_min"].replace(">", "", inplace=True, regex=True)
@@ -293,3 +293,32 @@ def number_col_addMinMax(data):
     data["Q43_TPU use freq_max"].replace(constant.Q43_min_option, "1", inplace=True)
     data["Q43_TPU use freq_max"].replace(constant.Q43_max_option, "inf", inplace=True)
     data["Q43_TPU use freq_max"].replace(constant.Q43_none_option, "0", inplace=True)
+
+def filter_unprofessional(data):
+    # remove students
+    data = data[data["Q5_student or not"] != 'No']
+    # remove students and currently not employed
+    data = data[data["Q23_role title"] != 'Currently not employed']
+    data = data[data["Q23_role title"] != 'Student']
+
+def filter_abnormal_experience(data):
+    # first we get the row index of age and experience years that cells value are not inf
+    non_inf_data = data[["Q2_age_max", "Q11_coding years_min"]].ne('inf').all(axis=1)
+    # subtract age and years
+    age_sub_year = data.loc[non_inf_data, ["Q2_age_max"]].astype(float)["Q2_age_max"] - \
+                   data.loc[non_inf_data, ["Q11_coding years_min"]].astype(float)["Q11_coding years_min"]
+    # drop the row with abnormal experience (max age - min coding years <= 10)
+    data.drop(data.loc[age_sub_year[age_sub_year <= 10].index].index, inplace=True)
+
+    # first we get the row index of age and experience years that cells value are not inf
+    non_inf_data = data[["Q2_age_max", "Q16_ML years_min"]].ne('inf').all(axis=1)
+    # subtract age and years
+    age_sub_year = data.loc[non_inf_data, ["Q2_age_max"]].astype(float)["Q2_age_max"] - \
+                   data.loc[non_inf_data, ["Q16_ML years_min"]].astype(float)["Q16_ML years_min"]
+    # drop the row with abnormal experience (max age - min ML years <= 10)
+    data.drop(data.loc[age_sub_year[age_sub_year <= 10].index].index, inplace=True)
+
+def filter_abnormal_degree(data):
+    doctor_data = data[["Q8_academic dgree"]].isin(["Professional doctorate", "Doctoral degree"]).all(axis=1)
+    doctor_age = data.loc[doctor_data, ["Q2_age_min"]].astype(float)
+    data.drop(data.loc[doctor_age[doctor_age["Q2_age_min"]<=20].index].index, inplace=True)
