@@ -1,23 +1,31 @@
 import pandas as pd
 
-def country_income(df0, df1, df2, year, country):
-    a=df0[['Q3','Q24']].copy()
-    a.rename(columns={'Q3': 'Country', 'Q24':'Yearly_compensation'},inplace=True)
-    b=df1[['Q3','Q25']].copy()
-    b.rename(columns={'Q3': 'Country', 'Q25':'Yearly_compensation'},inplace=True)
-    c=df2[['Q4','Q29']].copy()
-    c.rename(columns={'Q4': 'Country', 'Q29':'Yearly_compensation'},inplace=True)
+def country_income(data):
+
+    # filter the data for the columns needed
+    filter_col = ['Q29_yearly compensation_min','Q29_yearly compensation_max', 'year', 'Q4_country']
+    data = data[filter_col]
+
+    # drop the rows with missing values and calculate the median income by averaging the min and max
+    data.dropna(inplace=True)
+    data['Median'] = (data['Q29_yearly compensation_min'] + data['Q29_yearly compensation_max'])/2
+
+    # outliers who earn more than 500000 is filtered out
+    median = data[data['Q29_yearly compensation_min']<500000][['Median', 'year', 'Q4_country']]
+    median.rename(columns={'Q4_country': 'Country', 'year': 'Year'}, inplace=True)
+
+    # find the top ten countries with the most respondants
+    list_of_top10 = median.value_counts('Country')[:11].reset_index()
+    list_of_top10 = list_of_top10['Country'].tolist()
+    list_of_top10.remove('Other')
+
+    # from the top ten countries, filter the data for the selected countries and years
+    median = median[median['Country'].isin(list_of_top10)]
     
-    df_country_income = pd.concat([a[1:],b[1:],c[1:]])
-    a = df_country_income['Yearly_compensation']
-    b = a.str.split('-', expand=True)[1]
-    b = b.str.replace(',', '')
-    df_country_income['Yearly_compensation'] = b
+    # median = median[median['Year'].isin(range(start, end+1))]
+    # median = median[median['Country'].isin(country)]
+    # median.rename(columns={'Median': 'Median Income'}, inplace=True)
 
-    # find by country
-    ls = df_country_income['Country'] == country
-    income_of_country = df_country_income[ls]
-    data = income_of_country['Yearly_compensation']
-    data = data.astype(float)
+    return median
 
-    return data
+

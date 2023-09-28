@@ -6,58 +6,102 @@ import streamlit as st
 import scipy.stats as stats
 import matplotlib.pyplot as plt
 import seaborn as sns
-import sys
-from src.analysis.framework import framework
-from src.analysis.job_title import title
-from src.analysis.country_income import country_income
+import plotly.express as px
 
-filename2020 = './data/raw/kaggle_survey_2020_responses.csv'
-filename2021 = './data/raw/kaggle_survey_2021_responses.csv'
-filename2022 = './data/raw/kaggle_survey_2022_responses.csv'
+def vis_income():
+    list_of_top10 = ['India', 'United States of America', 'Japan', 'Brazil', 'Russia', 'United Kingdom of Great Britain and Northern Ireland', 'Nigeria', 'Spain', 'China', 'Germany']
+    
+    country = st.multiselect('Select countries to display their median income distribution:', list_of_top10, default='United States of America')
+    start, end = st.slider("Select the time frame", 2020, 2022, (2020,2022))
+    
+    # read country_income data from analyzed folde
+    income = pd.read_csv('./data/analyzed/country_income.csv', low_memory=False)
 
-df0 = pd.read_csv(filename2020, low_memory=False)
-df1 = pd.read_csv(filename2021, low_memory=False)
-df2 = pd.read_csv(filename2022, low_memory=False)
+    income = income[income['Year'].isin(range(start, end+1))]
+    income = income[income['Country'].isin(country)]
+    income.rename(columns={'Median': 'Median Income'}, inplace=True)
 
-df0['year'] = 2020
-df1['year'] = 2021
-df2['year'] = 2022
+    st.markdown("### Estimated Income Distribution in selected countries within the chosen timeframe ###")
+
+    plt.figure(figsize=(10, 6))
+    sns.set(style="whitegrid")
+    ax=sns.boxplot(x='Country', y='Median Income', data=income)
+    plt.title("Income Distribution by Country")
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right', fontsize=10)
+    st.pyplot(plt)
+
+    # disclaimer
+    st.empty()
+    st.write('Disclaimer')
+    st.write('1. Top ten countries with the most respondants are selected.')
+    st.write('2. The income of each respondant is estimated as the average of the min and max of the chosen range.')
+    st.write('3. The outliers who earn more than $500,000 is filtered out.')
+
+def vis_ML():
+    # read framework data from analyzed folder
+    pop_framework = pd.read_csv('./data/analyzed/framework.csv', low_memory=False)
+    print(pop_framework)
+
+    st.markdown("### Change in the Composition of Popular Machine Learning Frameworks over the three years ###")
+
+    st.plotly_chart(px.pie(pop_framework, values='2020', names='Framework', title='Popular Machine Learning Frameworks in 2020', ))
+    st.plotly_chart(px.pie(pop_framework, values='2021', names='Framework', title='Popular Machine Learning Frameworks in 2021', ))
+    st.plotly_chart(px.pie(pop_framework, values='2022', names='Framework', title='Popular Machine Learning Frameworks in 2022', ))
 
 
-# country_earn = country_income(df0, df1, df2, year, country)
+    # disclaimer
+    st.write('Disclaimer')
+    st.write('1. Top 6 most used Machine Learning frameworks are shown and the rest are combined as Others')
 
-title_of_top5 = title(df0, df1, df2)
-pop_framework = framework(df0, df1, df2)
+
+
+def vis_Jobtitle():
+    # read job title data from analyzed folder
+    title_of_top5 = pd.read_csv('./data/analyzed/job_title.csv', low_memory=False)
+
+
+    st.markdown("### Top Five Job Titles of the respondants ###")
+
+    # Create a multiselect widget with the top 5 job titles
+    selected_titles = st.multiselect('Select job titles to display their trends:', title_of_top5['Title'], 'Student')
+
+    # Filter the DataFrame for the selected title
+    title_data = title_of_top5[title_of_top5['Title'].isin(selected_titles)]
+    # Create a line plot for the selected title
+    st.line_chart(title_data.set_index('Title').T)
+
+    # disclaimer
+    st.write('Disclaimer')
+    st.write('1. Top five job titles of the respondants are selected')
+    st.write('2. The job titles of the same role are synchronized')
+
 
 
 st.header("Data Science and Machine Learning")
-st.header("Industry Survey 2020-2022", divider='blue')
-# page = st.sidebar.selectbox('Select a Page:', ['Trend', 'Statistics'])
+st.header("Industry Survey 2020-2022")
 
 tab1, tab2 = st.tabs(["Trends", "Statistics"])
 
 with tab1:
     st.header("Trends")
-    st.write('Top five job titles of the respondants')
-    selected_titles = st.multiselect('Select job titles to display their trends:', title_of_top5['title'], 'Student')
+    labelx = ['Popular Job Titles', 'Popular ML Framework']
+    x = st.selectbox("Which trend do you want to see?",labelx,0)
 
-    # Filter the DataFrame for the selected title
-    title_data = title_of_top5[title_of_top5['title'].isin(selected_titles)]
+    if x == 'Popular ML Framework':
+        vis_ML()
 
-    # Create a line plot for the selected title
-    # if not title_data.empty:
-    st.line_chart(title_data.set_index('title').T)
-
-    # Display a bar chart for the selected title
-    st.bar_chart(title_data.set_index('title').T)
+    if x == 'Popular Job Titles':
+        vis_Jobtitle()
 
 with tab2:
     st.header("Statistics")
-    labelx = ['Age Composition', 'Level of Income', 'Popular ML Framework']
-    x = st.selectbox("Which trend do you want to see?",labelx,0)
-    timeframe = st.slider("Select the time frame", 2020, 2023, (2020,2023))
-    year0 = st.checkbox('2020')
-    year1 = st.checkbox('2021')
-    year2 = st.checkbox('2022')
+    labely = ['Income by Country']
+    y = st.selectbox("Which Statistics do you want to see?", labely, 0)
+
+    if y == 'Income by Country':
+        vis_income()
+            
+
+        
 
 
