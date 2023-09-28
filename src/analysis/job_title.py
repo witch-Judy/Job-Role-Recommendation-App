@@ -1,37 +1,31 @@
 import pandas as pd
 
-def title(df0, df1, df2):
-    filter_col = [col for col in df0 if col.startswith('Q5')]
-    filter_col.append('year')
-    df0= df0[filter_col].drop(0)
+def title(data):
 
-    filter_col = [col for col in df1 if col.startswith('Q5')]
-    filter_col.append('year')
-    df1= df1[filter_col].drop(0)
+    # find the number of students in 2022
+    filter_col = [col for col in data if col.startswith('Q5')]
+    no_of_stu = data[filter_col].value_counts().iloc[1]
+    no_of_stu
 
-    filter_col = [col for col in df2 if col.startswith('Q5')]
-    filter_col.append('year')
-    df2_students = df2[filter_col].drop(0)
+    # filter the data for job titles and years
+    data = data[["year", "Q23_role title"]]
 
-    filter_col = [col for col in df2 if col.startswith('Q23')]
-    filter_col.append('year')
-    df2 = df2[filter_col].drop(0)
+    # synchronize the job titles of the same role
+    by_year = data.groupby(['year', 'Q23_role title']).size().reset_index(name='count')
+    by_year.rename({"Q23_role title": "Title"}, axis=1, inplace=True)
+    mask = by_year['Title'].str.startswith('Data Analyst')
+    by_year.loc[mask, 'Title'] = 'Data Analyst'
+    mask = by_year['Title'].str.startswith('Machine Learning')
+    by_year.loc[mask, 'Title'] = 'Machine Learning Engineer'
 
-    no_of_stu = df2_students.value_counts().iloc[1]
-    df2 = df2.value_counts().reset_index().rename(columns={'Q23':'title'})
+    # create a pivot table with job titles as rows and years as columns
+    pivot_df = by_year.pivot(index='Title', columns='year', values='count')
 
-    new_row = {'title': 'Student', 'year': 2022, 'count':no_of_stu}
-    df2.loc[-1] = new_row
-    df2.index = df2.index + 1
-    df2 = df2.sort_index()
+    # assign the total number of students in 2022 due to the different format of the 2022 survey
+    pivot_df[2022].loc['Student'] = no_of_stu
+    pivot_df.sort_values(by=2022, ascending=False, inplace=True)
 
-    df2.at[2, 'title'] = 'Data Analyst'
-    df0 = df0.value_counts().reset_index().rename(columns={'Q5':'title'})
-    df1 = df1.value_counts().reset_index().rename(columns={'Q5':'title'})
-    merged_df = df2.merge(df1, on='title', how='outer').merge(df0, on='title', how='outer')
-
-    top5=merged_df.dropna().iloc[:5]
-    top5 = top5.drop(columns=['year_x', 'year_y', 'year']).rename(columns={'count_x':2022, 'count_y':2021, 'count':2020})
-    top5df = top5.astype(int, errors='ignore')
-
-    return top5df
+    # for top 5 titles, change the column names to strings and values to integers
+    top_5 = pivot_df.iloc[:5].rename({2020:'2020', 2021:'2021', 2022: '2022'}, axis=1).reset_index()
+    top_5 = top_5.astype(int, errors='ignore')
+    return top_5
