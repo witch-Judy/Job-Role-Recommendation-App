@@ -152,12 +152,15 @@ def col_format(data2020, data2021, data2022, question2020Mul, question2021Mul, q
         elif "_" in col:
             questionNum = col.split("_", 1)[0]
             shortStatement = dataColNameMap[questionNum]
-            choice = question2022Mul[col][0].split("-")[-1].strip()
+            if " - Selected Choice - " in question2022Mul[col][0]:
+                choice = question2022Mul[col][0].split("- Selected Choice -")[-1].strip()
+            else:
+                choice = question2022Mul[col][0].split("-")[-1].strip()
             # if choice statement contains "(xxxx)" we delete it
             if "(" in choice:
                 choice = choice.split("(")[0].strip()
             # update multiple choices question not empty cell value to 1
-            data2022[col] = data2022[col].replace(pd.unique(data2022[data2022[col].notnull()][col]), 1)
+            # data2022[col] = data2022[col].replace(pd.unique(data2022[data2022[col].notnull()][col]), 1)
             # rename columns name to "Q12_coding language_Python"
             data2022.rename(columns={col: questionNum + "_" + shortStatement + "_" + choice}, inplace=True)
 
@@ -176,13 +179,13 @@ def col_format(data2020, data2021, data2022, question2020Mul, question2021Mul, q
             if questionNum in questionMap2021:
                 questionNum2022 = questionMap2021[questionNum]
                 shortStatement = dataColNameMap[questionNum2022]
-                choice = question2021Mul[col][0].split("-")[-1].strip()
+                choice = question2021Mul[col][0].split("- Selected Choice -")[-1].strip()
                 if "(" in choice:
                     # if choice statement contains "(xxxx)" we delete it
                     choice = choice.split("(")[0].strip()
 
                 # update multiple choices question not empty cell value to 1
-                data2021[col] = data2021[col].replace(pd.unique(data2021[data2021[col].notnull()][col]), 1)
+                # data2021[col] = data2021[col].replace(pd.unique(data2021[data2021[col].notnull()][col]), 1)
                 # rename columns name to "Q12_coding language_Python"
                 data2021.rename(columns={col: questionNum2022 + "_" + shortStatement + "_" + choice}, inplace=True)
 
@@ -200,12 +203,12 @@ def col_format(data2020, data2021, data2022, question2020Mul, question2021Mul, q
             if questionNum in questionMap2020:
                 questionNum2022 = questionMap2020[questionNum]
                 shortStatement = dataColNameMap[questionNum2022]
-                choice = question2020Mul[col][0].split("-")[-1].strip()
+                choice = question2020Mul[col][0].split("- Selected Choice -")[-1].strip()
                 if "(" in choice:
                     choice = choice.split("(")[0].strip()
 
                 # update multiple choices question not empty cell value to 1
-                data2020[col] = data2020[col].replace(pd.unique(data2020[data2020[col].notnull()][col]), 1)
+                # data2020[col] = data2020[col].replace(pd.unique(data2020[data2020[col].notnull()][col]), 1)
                 # rename columns name to "Q12_coding language_Python"
                 data2020.rename(columns={col: questionNum2022 + "_" + shortStatement + "_" + choice}, inplace=True)
 
