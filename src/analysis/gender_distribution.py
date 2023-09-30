@@ -6,25 +6,24 @@ Project:    Job Role Recommendation App
 Function:   Functions for Analysis of gender_distribution
 """
 import numpy as np
-import matplotlib.pyplot as plt
-
 import pandas as pd
+import matplotlib.pyplot as plt
 import os
+import streamlit as st
 
 # Get the absolute path of the current script
 current_path = os.path.abspath(__file__)
 # Get the root directory of the project
 project_root_path = os.path.dirname(os.path.dirname(os.path.dirname(current_path)))
-loc = os.path.join(project_root_path, "data", "processed")
-final_data_path = os.path.join(loc, "Data_Preprocess_v3.csv")
+loc = os.path.join(project_root_path, "data", "analyzed")
+final_data_path = os.path.join(loc, "gender_distribution.csv")
 final_data = pd.read_csv(final_data_path)
 
 
-def plot_gender_distribution(data, years):
+def plot_gender_distribution(years):
     """
     Plot the gender distribution of different country across different years.
     Parameters:
-    - data: DataFrame containing the survey data
     - years: List of years to consider for the donut chart
     Returns:
     - A donut chart showing the gender distribution of different country across different years
@@ -39,7 +38,7 @@ def plot_gender_distribution(data, years):
     developing_countries = ["India", "Brazil", "China", "Russia", "Indonesia"]
     all_countries = developed_countries + developing_countries
     # Filter data for the specific years and countries
-    filtered_data = data[data['year'].astype(str).isin(map(str, years)) & data['Q4_country'].isin(all_countries)]
+    filtered_data = final_data[final_data['year'].astype(str).isin(map(str, years)) & final_data['Q4_country'].isin(all_countries)]
     # Compute the gender distribution for each country
     gender_counts = filtered_data.groupby(['Q4_country', 'Q3_gender']).size().unstack().fillna(0)
     # Convert gender counts to percentages
@@ -58,10 +57,17 @@ def plot_gender_distribution(data, years):
         "Prefer to self-describe": "#F4D35E",
         "Nonbinary": "#83BCA9"
     }
-    # List of genders with small percentage values
+
+    # 在创建子图之前，保存图例的信息
+    legend_colors = [gender_colors[gender] for gender in gender_percentage.columns]
+    legend_labels = gender_percentage.columns.tolist()
+
+
+    # # List of genders with small percentage values
     small_genders = ["Prefer not to say", "Prefer to self-describe", "Nonbinary"]
     # Create the figure
     plt.figure(figsize=(22, 10))
+
     # Iterate through each country and plot individual donut chart
     for index, country in enumerate(all_countries):
         plt.subplot(2, 5, index + 1)
@@ -91,16 +97,21 @@ def plot_gender_distribution(data, years):
         # Set the title for each individual donut chart
         plt.title(country_display_names.get(country, country))
     # Add a legend
-    plt.legend(title="Gender", bbox_to_anchor=(1.15, 0.5), loc="center", labels=gender_percentage.columns)
+    legend = plt.figlegend(handles=[plt.Rectangle((0, 0), 1, 1, color=color) for color in legend_colors],
+                           labels=legend_labels,
+                           loc='center',
+                           title="Gender")
+    # 调整图例边框的线宽
+    legend.get_frame().set_linewidth(0.3)
+
+
     # Adjust layout
     plt.tight_layout()
     plt.subplots_adjust(top=0.95)
     # Set a dynamic title based on the years
-    dynamic_title = f"the gender percentage of different country in {', '.join(map(str, years))}"
+    dynamic_title = f"the gender percentage of different countries in {', '.join(map(str, years))}"
     plt.suptitle(dynamic_title, fontsize=18, y=0.98)
-    plt.show()
+    st.pyplot(plt.gcf())
 
-# Just a demonstration since we don't have the data loaded here:
-# plot_gender_distribution_individual_donuts_v20(data, [2020, 2021])
 
-plot_gender_distribution(final_data, [2020, 2021,2022])
+# plot_gender_distribution([2020, 2021,2022])
