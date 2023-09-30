@@ -8,17 +8,11 @@ Function:   Functions for Analysis of age vs industry
 
 import seaborn as sns
 import matplotlib.pyplot as plt
-
 import pandas as pd
 import os
+import streamlit as st
 
-# Get the absolute path of the current script
-current_path = os.path.abspath(__file__)
-# Get the root directory of the project
-project_root_path = os.path.dirname(os.path.dirname(os.path.dirname(current_path)))
-loc = os.path.join(project_root_path, "data", "processed")
-final_data_path = os.path.join(loc, "Data_Preprocess_v3.csv")
-final_data = pd.read_csv(final_data_path)
+
 
 def plot_industry_distribution(age_range, years):
     """
@@ -30,6 +24,15 @@ def plot_industry_distribution(age_range, years):
     Returns:
     the bar chart of the Industry Distribution for selected Age Range and selected years
     """
+    # Get the absolute path of the current script
+    current_path = os.path.abspath(__file__)
+    # Get the root directory of the project
+    project_root_path = os.path.dirname(os.path.dirname(os.path.dirname(current_path)))
+    loc = os.path.join(project_root_path, "data", "analyzed")
+    final_data_path = os.path.join(loc, "age_industry.csv")
+    final_data = pd.read_csv(final_data_path)
+    final_data['Q24_industry'].fillna('Not Specified', inplace=True)
+
 
     # to filter the data according to age range and years
     filtered_data = final_data[(final_data['Q2_age'] == age_range) & (final_data['year'].isin(years))]
@@ -40,7 +43,6 @@ def plot_industry_distribution(age_range, years):
     if industry_counts.empty:
         print(f"No industry data available for age range {age_range} in years {years}.")
         return
-
     # to plot bar chart
     plt.figure(figsize=(12, 8))
     sns.barplot(x=industry_counts.index, y=industry_counts.values, color="#273c75")
@@ -49,10 +51,6 @@ def plot_industry_distribution(age_range, years):
     plt.ylabel('Count')
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
-    plt.show()
-
+    st.pyplot(plt.gcf())
 # to use this function
-plot_industry_distribution('30-34', [2021])
-
-
-
+# plot_industry_distribution('30-34', [2021])

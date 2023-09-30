@@ -6,20 +6,19 @@ Project:    Job Role Recommendation App
 Function:   Functions for Analysis of coding experience vs compensation
 """
 
+import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-import pandas as pd
 import os
+import streamlit as st
 
 # Get the absolute path of the current script
 current_path = os.path.abspath(__file__)
 # Get the root directory of the project
 project_root_path = os.path.dirname(os.path.dirname(os.path.dirname(current_path)))
-loc = os.path.join(project_root_path, "data", "processed")
-final_data_path = os.path.join(loc, "Data_Preprocess_v3.csv")
+loc = os.path.join(project_root_path, "data", "analyzed")
+final_data_path = os.path.join(loc, "experience_vs_salary.csv")
 final_data = pd.read_csv(final_data_path)
-
-
 
 # Functions for plotting experience vs compensation
 
@@ -51,12 +50,12 @@ def compute_salary_midpoint(salary_range):
         return None
 
 
-def plot_experience_vs_compensation(data, years):
+def plot_experience_vs_compensation(years):
     """
     Updated function to use the new compute_salary_midpoint_v2 function.
     """
     # Filter data based on the specified years and exclude students
-    filtered_data = data[(data['year'].astype(int).isin(years)) & (data['Q5_student or not'] != 'Student')]
+    filtered_data = final_data[(final_data['year'].astype(int).isin(years)) & (final_data['Q5_student or not'] != 'Student')]
 
     # Convert the salary range to its midpoint
     filtered_data['Q29_midpoint'] = filtered_data['Q29_yearly compensation'].apply(compute_salary_midpoint)
@@ -79,11 +78,10 @@ def plot_experience_vs_compensation(data, years):
     plt.ylim(0, 250000)
     plt.xticks(rotation=45)
     plt.tight_layout()
-    plt.show()
+    st.pyplot(plt.gcf())
 
 
-# For demonstration, plot the relationship for the year 2020
-plot_experience_vs_compensation(final_data, [2020])
-plot_experience_vs_compensation(final_data, [2020, 2021])
-plot_experience_vs_compensation(final_data, [2020, 2021, 2022])
-
+# # For demonstration, plot the relationship for the year 2020
+# plot_experience_vs_compensation([2020])
+# plot_experience_vs_compensation([2020, 2021])
+# plot_experience_vs_compensation([2020, 2021, 2022])

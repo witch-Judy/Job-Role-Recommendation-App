@@ -20,10 +20,11 @@ final_data = pd.read_csv(dataV3_path)
 
 
 from src.analysis.coding_language_country import plot_language_trend
-from src.analysis.test_plot import test_plot
+from src.analysis.age_industry import plot_industry_distribution
 
 
-
+# to delete the warning message of the front page
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
 # Sidebar title
 st.sidebar.title("Job Role Recommendation")
@@ -40,7 +41,7 @@ if main_selection == "Data Analysis":
 
     # If x class is selected under Data Analysis
     if analysis_selection == "<x>：Trend over time":
-        st.write("### <x> Analysis")
+        st.write("### <x> Trend over time")
 
         # Add sub-titles for x class
         x_sub_title = st.sidebar.selectbox("Choose a sub-title for x class", ["country_income", "Machine learning framework", "coding_language"])
@@ -52,23 +53,39 @@ if main_selection == "Data Analysis":
             # Add a country selector
             country = st.sidebar.selectbox("Choose a country", ["United States of America", "Japan", "India", "China", "Germany", "France", "Brazil", "Russia", "United Kingdom", "Indonesia"])
             # Display the plot based on the selected country
-            test_plot ()
 
-            # plot_language_trend(final_data, country)
+            plot_language_trend(final_data, country)
 
-
+            #TODO
+            # this place is for Young Ho to place his <x>plots
 
 
 
 
     # If y class is selected under Data Analysis
     elif analysis_selection == "<y>：Statistical tendencies":
-        st.write("### <y> Analysis")
+        st.write("### <y> Statistical tendencies")
 
         # Add sub-titles for y class
         y_sub_title = st.sidebar.selectbox("Choose a sub-title for y class", ["Programming experience vs Salary", "income_country", "the composition of industry based on age","job_title","the gender ratio"])
         st.write(f"You chose {y_sub_title} under {analysis_selection}")
         # Display content or analysis for the chosen sub-title
+        if y_sub_title == "the composition of industry based on age":
+            st.write("you have to choose an age range and the years  and then we will give you a barchart. We do not have data on 2020 so you can not selet this year")
+            # Add a age range selector
+            age_range = st.sidebar.selectbox("Choose an age_range", ["25-29", "30-34", "35-39", "22-24", "40-44 ", "45-49 ", "50-54", "18-21  ", "55-59 ", "60-69 ","70+"])
+            # Add a year range selector
+            year_range_str = st.sidebar.selectbox("choose a year_range",["[2021, 2022]","[2021]","[2022]"])
+            year_range = eval(year_range_str)
+            # Display the plot based on the selected bottoms
+            plot_industry_distribution(age_range, year_range )
+
+
+
+
+
+
+
 
 # If Recommendation is selected
 elif main_selection == "Recommendation":
