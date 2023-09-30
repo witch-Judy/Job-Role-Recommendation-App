@@ -63,14 +63,17 @@ def vis_ML():
 
     st.markdown("### Change in the Composition of Popular Machine Learning Frameworks over the three years ###")
 
-    st.plotly_chart(px.pie(pop_framework, values='2020', names='Framework', title='Popular Machine Learning Frameworks in 2020', ))
-    st.plotly_chart(px.pie(pop_framework, values='2021', names='Framework', title='Popular Machine Learning Frameworks in 2021', ))
-    st.plotly_chart(px.pie(pop_framework, values='2022', names='Framework', title='Popular Machine Learning Frameworks in 2022', ))
-
+    st.plotly_chart(
+        px.pie(pop_framework, values='2020', names='Framework', title='Popular Machine Learning Frameworks in 2020', ))
+    st.plotly_chart(
+        px.pie(pop_framework, values='2021', names='Framework', title='Popular Machine Learning Frameworks in 2021', ))
+    st.plotly_chart(
+        px.pie(pop_framework, values='2022', names='Framework', title='Popular Machine Learning Frameworks in 2022', ))
 
     # disclaimer
     st.write('Disclaimer')
     st.write('1. Top 6 most used Machine Learning frameworks are shown and the rest are combined as Others')
+
 
 
 def vis_Jobtitle():
@@ -158,7 +161,7 @@ tab1, tab2 = st.tabs(["Trends", "Statistics"])
 
 with tab1:
     st.header("Trends")
-    labelx = ['Popular Job Titles', 'Popular ML Framework','Popular Programming Language']
+    labelx = ['Popular Job Titles', 'Popular Machine Learning Frameworks','Popular Programming Language']
     x = st.selectbox("Which trend do you want to see?",labelx,0)
 
     if x == 'Popular Machine Learning Frameworks':
