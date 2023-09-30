@@ -21,10 +21,6 @@ def country_income(data):
 
     # from the top ten countries, filter the data for the selected countries and years
     median = median[median['Country'].isin(list_of_top10)]
-    
-    # median = median[median['Year'].isin(range(start, end+1))]
-    # median = median[median['Country'].isin(country)]
-    # median.rename(columns={'Median': 'Median Income'}, inplace=True)
 
     return median
 

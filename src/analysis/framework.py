@@ -22,8 +22,8 @@ def framework(data):
     summary = data.iloc[:6]
     summary.loc['Others'] = data[6:].sum()
 
+    # rename the last row as Others
     summary['Framework'].iloc[-1] = 'Others'
-    summary
 
     # return the summary
     return summary
