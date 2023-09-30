@@ -14,11 +14,15 @@ def vis_income():
     country = st.multiselect('Select countries to display their median income distribution:', list_of_top10, default='United States of America')
     start, end = st.slider("Select the time frame", 2020, 2022, (2020,2022))
     
-    # read country_income data from analyzed folde
+    # read country_income data from analyzed folder
     income = pd.read_csv('./data/analyzed/country_income.csv', low_memory=False)
 
+    # filter the data as per the user input
     income = income[income['Year'].isin(range(start, end+1))]
     income = income[income['Country'].isin(country)]
+
+    # sort the country by the name of the country to maintain order in the graph
+    income = income.sort_values(by=['Country'])
     income.rename(columns={'Median': 'Median Income'}, inplace=True)
 
     st.markdown("### Estimated Income Distribution in selected countries within the chosen timeframe ###")
@@ -54,7 +58,6 @@ def vis_ML():
     st.write('1. Top 6 most used Machine Learning frameworks are shown and the rest are combined as Others')
 
 
-
 def vis_Jobtitle():
     # read job title data from analyzed folder
     title_of_top5 = pd.read_csv('./data/analyzed/job_title.csv', low_memory=False)
@@ -67,8 +70,23 @@ def vis_Jobtitle():
 
     # Filter the DataFrame for the selected title
     title_data = title_of_top5[title_of_top5['Title'].isin(selected_titles)]
+
+
     # Create a line plot for the selected title
-    st.line_chart(title_data.set_index('Title').T)
+    title_data.set_index('Title', inplace=True)
+
+    # Plot the line chart using Matplotlib
+    fig, ax = plt.subplots()
+    title_data.T.plot(kind='line', ax=ax, marker='o')
+
+    # Set plot details
+    ax.set(xlabel='Year', ylabel='Counts', title='Job Titles Over Years')
+    ax.grid(False)
+    ax.legend(title='Job Title')
+
+    # Display the Matplotlib plot in Streamlit
+    st.pyplot(fig)
+
 
     # disclaimer
     st.write('Disclaimer')
@@ -84,10 +102,10 @@ tab1, tab2 = st.tabs(["Trends", "Statistics"])
 
 with tab1:
     st.header("Trends")
-    labelx = ['Popular Job Titles', 'Popular ML Framework']
+    labelx = ['Popular Job Titles', 'Popular Machine Learning Frameworks']
     x = st.selectbox("Which trend do you want to see?",labelx,0)
 
-    if x == 'Popular ML Framework':
+    if x == 'Popular Machine Learning Frameworks':
         vis_ML()
 
     if x == 'Popular Job Titles':
