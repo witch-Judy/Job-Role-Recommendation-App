@@ -19,3 +19,8 @@ data_income = country_income(data_preprocessed)
 data_income.to_csv('./data/analyzed/country_income.csv',
             index=False, header=True, mode='w')
 
+
+
+
+
+
