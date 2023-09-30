@@ -17,16 +17,13 @@ def framework(data):
 
     # gouping by year and count the number of each framework, sort by counts
     data = data.groupby('year').count().transpose().reset_index().rename(columns={'index': 'Framework', 2020:'2020', 2021:'2021', 2022:'2022'}).sort_values(by='2022', ascending=False)
-    
-    # fix value for Scikit-learn
-    data['Framework'].iloc[0] = 'Scikit-learn'
 
     # create a summary of the major frameworks and combine others
     summary = data.iloc[:6]
     summary.loc['Others'] = data[6:].sum()
 
+    # rename the last row as Others
     summary['Framework'].iloc[-1] = 'Others'
-    summary
 
     # return the summary
     return summary

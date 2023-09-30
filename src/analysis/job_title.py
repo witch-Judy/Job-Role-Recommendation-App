@@ -28,4 +28,5 @@ def title(data):
     # for top 5 titles, change the column names to strings and values to integers
     top_5 = pivot_df.iloc[:5].rename({2020:'2020', 2021:'2021', 2022: '2022'}, axis=1).reset_index()
     top_5 = top_5.astype(int, errors='ignore')
+    
     return top_5
