@@ -48,6 +48,7 @@ def vis_ML():
 
     st.markdown("### Change in the Composition of Popular Machine Learning Frameworks over the three years ###")
 
+    # Create pie charts for the three years
     st.plotly_chart(px.pie(pop_framework, values='2020', names='Framework', title='Popular Machine Learning Frameworks in 2020', ))
     st.plotly_chart(px.pie(pop_framework, values='2021', names='Framework', title='Popular Machine Learning Frameworks in 2021', ))
     st.plotly_chart(px.pie(pop_framework, values='2022', names='Framework', title='Popular Machine Learning Frameworks in 2022', ))
