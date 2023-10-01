@@ -81,8 +81,6 @@ def plot_language_trend(country):
     plt.xticks(np.arange(len(top_languages)) + bar_width, [lang.split("_")[-1] for lang in top_languages], rotation=45)
     plt.legend()
     plt.tight_layout()
-    # plt.show()
-    # 替换 plt.show() 为以下代码
     st.pyplot(plt.gcf())
 
 

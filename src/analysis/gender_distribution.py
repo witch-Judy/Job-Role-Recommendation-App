@@ -58,12 +58,11 @@ def plot_gender_distribution(years):
         "Nonbinary": "#83BCA9"
     }
 
-    # 在创建子图之前，保存图例的信息
     legend_colors = [gender_colors[gender] for gender in gender_percentage.columns]
     legend_labels = gender_percentage.columns.tolist()
 
 
-    # # List of genders with small percentage values
+     # List of genders with small percentage values
     small_genders = ["Prefer not to say", "Prefer to self-describe", "Nonbinary"]
     # Create the figure
     plt.figure(figsize=(22, 10))
@@ -101,7 +100,6 @@ def plot_gender_distribution(years):
                            labels=legend_labels,
                            loc='center',
                            title="Gender")
-    # 调整图例边框的线宽
     legend.get_frame().set_linewidth(0.3)
 
 
