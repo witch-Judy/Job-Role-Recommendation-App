@@ -62,30 +62,33 @@ def vis_Jobtitle():
     # read job title data from analyzed folder
     title_of_top5 = pd.read_csv('./data/analyzed/job_title.csv', low_memory=False)
 
-
     st.markdown("### Top Five Job Titles of the respondants ###")
 
     # Create a multiselect widget with the top 5 job titles
     selected_titles = st.multiselect('Select job titles to display their trends:', title_of_top5['Title'], 'Student')
 
-    # Filter the DataFrame for the selected title
-    title_data = title_of_top5[title_of_top5['Title'].isin(selected_titles)]
+    if selected_titles == []:
+        st.markdown(''':red[Please select at least one job title]''')
+        
+    else:
+        # Filter the DataFrame for the selected title
+        title_data = title_of_top5[title_of_top5['Title'].isin(selected_titles)]
 
 
-    # Create a line plot for the selected title
-    title_data.set_index('Title', inplace=True)
+        # Create a line plot for the selected title
+        title_data.set_index('Title', inplace=True)
 
-    # Plot the line chart using Matplotlib
-    fig, ax = plt.subplots()
-    title_data.T.plot(kind='line', ax=ax, marker='o')
+        # Plot the line chart using Matplotlib
+        fig, ax = plt.subplots()
+        title_data.T.plot(kind='line', ax=ax, marker='o')
 
-    # Set plot details
-    ax.set(xlabel='Year', ylabel='Counts', title='Job Titles Over Years')
-    ax.grid(False)
-    ax.legend(title='Job Title')
+        # Set plot details
+        ax.set(xlabel='Year', ylabel='Counts', title='Job Titles Over Years')
+        ax.grid(False)
+        ax.legend(title='Job Title')
 
-    # Display the Matplotlib plot in Streamlit
-    st.pyplot(fig)
+        # Display the Matplotlib plot in Streamlit
+        st.pyplot(fig)
 
 
     # disclaimer
@@ -121,5 +124,3 @@ with tab2:
             
 
         
-
-
