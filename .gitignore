@@ -1,2 +1,4 @@
 .idea/
-**/__pycache__/
+src/analysis/__pycache__/
+src/cleaning/__pycache__/
+
