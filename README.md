@@ -13,19 +13,21 @@ By selected the "Trends" tab, we can observe multiple different topic of trends 
 We provide these trends in the drop-down menu to choose from:
  - Popular Job Title
  - Popular Machine Learning Framework
- - todo
+ - Popular Programming Language
 #### 1.2 Statistical tendencies
 By selected the "Statistics" tab, we can observe several different data statistics over selected years.
 We provide these statistics in the drop-down menu to choose from:
  - Income by Country
- - todo
+ - Industry Distribution of Different Age Range
+ - Experience vs Salary
+ - Gender Distribution
 
 ## How to run the Streamlit Web Page?
 1. First, Python is required in the local environment
 2. Dependency Python Library
    - Data Analytics & Graphing: pandas, matplotlib, seaborn, plotly
    - Front-End: streamlit
-   - Other: re, difflib
+   - Other: re, difflib, sys, os, warnings
 3. Open the terminal and go to the project directory
 4. Enter the following command and press enter
    ```
