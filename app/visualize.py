@@ -113,7 +113,7 @@ def vis_Jobtitle():
     st.write('1. Top five job titles of the respondants are selected')
     st.write('2. The job titles of the same role are synchronized')
 def program_lan():
-    st.markdown("### the trend of Programming Language used by specific country ###")
+    st.markdown("### The Trend of Programming Language used by Specific Country ###")
     label_country = ['United States of America','Japan','United Kingdom of Great Britain and Northern Ireland','France','Germany','India','Brazil','China','Russia','Indonesia']
 
     country = st.selectbox("Which country do you want to see?", label_country, 0)
@@ -127,7 +127,7 @@ def program_lan():
 
 def age_dist():
     st.markdown("### Industry Distribution for Age Range ###")
-    label_ages = ["25-29", "30-34", "35-39", "22-24", "40-44 ", "45-49 ", "50-54", "18-21  ", "55-59 ", "60-69 ", "70+"]
+    label_ages = ["18-21", "22-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-69", "70+"]
     ages = st.selectbox("which age range do you want to see? ", label_ages, 0)
     label_years = [2021,2022,(2021,2022)]
     years = st.selectbox("Which years range do you want to see?", label_years, 0)
@@ -138,19 +138,28 @@ def age_dist():
     st.write("There is no industry data in 2020, so we don't give you this option.")
 def salary_exper():
     st.markdown("### Relationship Between Coding Experience and Yearly Compensation. ###")
-    label_years2 = [(2020,2021,2022),2020,2021,2022,(2020,2021),(2020,2022),(2021,2022)]
-    years2 = st.selectbox("Which years range do you want to see?",label_years2,0)
-    if isinstance(years2, int):
-        years2 = [years2]
+    selected_years_range = st.slider('Select a range of years', 2020, 2022, (2020, 2022))
+    if selected_years_range[0] == selected_years_range[1]:
+        years_list = [selected_years_range[0]]
+    else:
+        years_list = list(selected_years_range)
+    years2 = list(years_list)
     plot_experience_vs_compensation(years2)
     st.write('Disclaimer')
     st.write("In the questionnaire survey data set, there are no 1-2 year options for 2021 and 2022, so they are empty. ")
 def gen_dist():
     st.markdown("### the gender percentage of different countries. ###")
-    label_years3 = [(2020, 2021, 2022), 2020, 2021, 2022, (2020, 2021), (2020, 2022), (2021, 2022)]
-    years3 = st.selectbox("Which years range do you want to see?", label_years3, 0)
-    if isinstance(years3, int):
-        years3 = [years3]
+    # label_years3 = [(2020, 2021, 2022), 2020, 2021, 2022, (2020, 2021), (2020, 2022), (2021, 2022)]
+    # years3 = st.selectbox("Which years range do you want to see?", label_years3, 0)
+    # if isinstance(years3, int):
+    #     years3 = [years3]
+
+    selected_years_range2 = st.slider('Select a range of years', 2020, 2022, (2020, 2022))
+    if selected_years_range2[0] == selected_years_range2[1]:
+        years_list2 = [selected_years_range2[0]]
+    else:
+        years_list2 = list(selected_years_range2)
+    years3 = list(years_list2)
     plot_gender_distribution(years3)
     st.write('Disclaimer')
     st.write("Top 10 countries are selected, based on the number of responders in the dataset, we give you the top five developed and developing countries with the highest respective numbers.")
@@ -175,14 +184,14 @@ with tab1:
 
 with tab2:
     st.header("Statistics")
-    labely = ['Income by Country','industry distribution of different age_range','experience vs salary','gender distribution']
+    labely = ['Income by Country','Industry Distribution of Different Age Range','Experience vs Salary','Gender Distribution']
     y = st.selectbox("Which Statistics do you want to see?", labely, 0)
 
     options = {
         'Income by Country': vis_income,
-        'industry distribution of different age_range': age_dist,
-        'experience vs salary': salary_exper,
-        'gender distribution': gen_dist
+        'Industry Distribution of Different Age Range': age_dist,
+        'Experience vs Salary': salary_exper,
+        'Gender Distribution': gen_dist
     }
 
     if y in options:

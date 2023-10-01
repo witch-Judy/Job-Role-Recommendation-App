@@ -36,13 +36,8 @@ def plot_industry_distribution(age_range, years):
 
     # to filter the data according to age range and years
     filtered_data = final_data[(final_data['Q2_age'] == age_range) & (final_data['year'].isin(years))]
-
     # to get the industry distribution
     industry_counts = filtered_data['Q24_industry'].value_counts()
-
-    if industry_counts.empty:
-        print(f"No industry data available for age range {age_range} in years {years}.")
-        return
     # to plot bar chart
     plt.figure(figsize=(12, 8))
     sns.barplot(x=industry_counts.index, y=industry_counts.values, color="#273c75")
