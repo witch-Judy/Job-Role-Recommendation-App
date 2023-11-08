@@ -18,6 +18,7 @@ import pandas as pd
 # data.to_csv(r'..\..\data\processed\Data_Preprocess_Encode_v1.csv',
 #             index=False, header=True, mode='w')
 
+
 data = pd.read_csv('./data/processed/Data_Preprocess_v6.csv', low_memory=False)
 
 data = data_encoding(data)
