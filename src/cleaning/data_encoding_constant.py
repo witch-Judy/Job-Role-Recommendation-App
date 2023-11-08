@@ -9,4 +9,5 @@ mulSelQuestionTitle = ["Q6_DS course platform", "Q12_coding language", "Q13_IDE"
                        "Q15_data visualization lib", "Q17_ML framework", "Q18_ML algo", "Q19_computer vision method", "Q20_NLP method"]
 
 
+
 sinSelQuestionTitle = ["Q3_gender", "Q8_academic dgree", 'Q4_country']

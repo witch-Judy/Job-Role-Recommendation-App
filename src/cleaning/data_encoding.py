@@ -16,7 +16,7 @@ def data_encoding(data):
 
     # single selection question (one question have one column): remove the column and add one-hot encoding columns
     data = onehotEncoder(data, constant.sinSelQuestionTitle)
-    
+
     return data
 
 def mulSelQuestionEncode(df, col_name):
