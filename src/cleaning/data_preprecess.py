@@ -167,6 +167,8 @@ def col_format(data2020, data2021, data2022, question2020Mul, question2021Mul, q
     # rename data 2021 column name to specific format
     for col in data2021:
         if "_B" in col:
+            # remove not useful column
+            del data2021[col]
             continue
         # question find a match (2022 <-> 2021)
         if col in questionMap2021:
@@ -192,6 +194,8 @@ def col_format(data2020, data2021, data2022, question2020Mul, question2021Mul, q
     # rename data 2020 column name to specific format
     for col in data2020:
         if "_B" in col:
+            # remove not useful column
+            del data2020[col]
             continue
         # question find a match (2022 <-> 2020)
         if col in questionMap2020:
