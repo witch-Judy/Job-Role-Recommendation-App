@@ -5,6 +5,10 @@ Course:     NUS IT5006 Fundamentals of Data Analytics
 Project:    Job Role Recommendation App
 Function:   Constant for Data Cleaning and Preprocessing
 """
+num_col = set()
+single_choice_col = set()
+multi_choice_col = set()
+
 dataColNameMap = {
     "Q1":"time",
     "Q2":"age",

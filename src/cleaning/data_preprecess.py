@@ -6,6 +6,7 @@ Project:    Job Role Recommendation App
 Function:   Functions for Data Cleaning and Preprocessing
 """
 import pandas as pd
+import numpy as np
 import re
 import difflib
 import data_preprocess_constant as constant
@@ -35,6 +36,11 @@ def data_preprocess():
     # filter student or unemployed answer (only use professional data)
     # filter_unprofessional(data)
     # todo: duration time (Get rid of those who take too long or too short time to complete the questionnaire)
+
+    # classify each column of different type and merge multiple choices question column into one column
+    GetColType_MergeQuestion(data)
+    # reorder dataframe columns in alphabetical order
+    data = data.reindex(sorted(data.columns), axis=1)
 
     return data
 
@@ -144,25 +150,32 @@ def popMulChoiceQuestion(df, colArr, df_mul):
     return df, df_mul
 def col_format(data2020, data2021, data2022, question2020Mul, question2021Mul, question2022Mul,
                questionMap2021, questionMap2020, dataColNameMap):
+    # get all the questions' column name that can be found in 3 dataset
+    renameColArr2022 = []
+    for ele in dataColNameMap.keys():
+        if ele in questionMap2021.values() and ele in questionMap2020.values():
+            renameColArr2022.append(ele)
+
     # rename data 2022 column name to specific format
     for col in data2022:
-        if col in dataColNameMap:
+        if col in dataColNameMap and col in renameColArr2022:
             # rename columns name to "Q1_time"
             data2022.rename(columns={col: col + "_" + dataColNameMap[col]}, inplace=True)
         elif "_" in col:
             questionNum = col.split("_", 1)[0]
-            shortStatement = dataColNameMap[questionNum]
-            if " - Selected Choice - " in question2022Mul[col][0]:
-                choice = question2022Mul[col][0].split("- Selected Choice -")[-1].strip()
-            else:
-                choice = question2022Mul[col][0].split("-")[-1].strip()
-            # if choice statement contains "(xxxx)" we delete it
-            if "(" in choice:
-                choice = choice.split("(")[0].strip()
-            # update multiple choices question not empty cell value to 1
-            # data2022[col] = data2022[col].replace(pd.unique(data2022[data2022[col].notnull()][col]), 1)
-            # rename columns name to "Q12_coding language_Python"
-            data2022.rename(columns={col: questionNum + "_" + shortStatement + "_" + choice}, inplace=True)
+            if questionNum in renameColArr2022:
+                shortStatement = dataColNameMap[questionNum]
+                if " - Selected Choice - " in question2022Mul[col][0]:
+                    choice = question2022Mul[col][0].split("- Selected Choice -")[-1].strip()
+                else:
+                    choice = question2022Mul[col][0].split("-")[-1].strip()
+                # if choice statement contains "(xxxx)" we delete it
+                if "(" in choice:
+                    choice = choice.split("(")[0].strip()
+                # update multiple choices question not empty cell value to 1
+                # data2022[col] = data2022[col].replace(pd.unique(data2022[data2022[col].notnull()][col]), 1)
+                # rename columns name to "Q12_coding language_Python"
+                data2022.rename(columns={col: questionNum + "_" + shortStatement + "_" + choice}, inplace=True)
 
     # rename data 2021 column name to specific format
     for col in data2021:
@@ -173,23 +186,24 @@ def col_format(data2020, data2021, data2022, question2020Mul, question2021Mul, q
         # question find a match (2022 <-> 2021)
         if col in questionMap2021:
             col2022 = questionMap2021[col]
-            if col2022 in dataColNameMap:
+            if col2022 in dataColNameMap and col2022 in renameColArr2022:
                 # rename columns name to "Q1_time"
                 data2021.rename(columns={col: col2022 + "_" + dataColNameMap[col2022]}, inplace=True)
         if "_" in col:
             questionNum = col.split("_", 1)[0]
             if questionNum in questionMap2021:
                 questionNum2022 = questionMap2021[questionNum]
-                shortStatement = dataColNameMap[questionNum2022]
-                choice = question2021Mul[col][0].split("- Selected Choice -")[-1].strip()
-                if "(" in choice:
-                    # if choice statement contains "(xxxx)" we delete it
-                    choice = choice.split("(")[0].strip()
+                if questionNum2022 in renameColArr2022:
+                    shortStatement = dataColNameMap[questionNum2022]
+                    choice = question2021Mul[col][0].split("- Selected Choice -")[-1].strip()
+                    if "(" in choice:
+                        # if choice statement contains "(xxxx)" we delete it
+                        choice = choice.split("(")[0].strip()
 
-                # update multiple choices question not empty cell value to 1
-                # data2021[col] = data2021[col].replace(pd.unique(data2021[data2021[col].notnull()][col]), 1)
-                # rename columns name to "Q12_coding language_Python"
-                data2021.rename(columns={col: questionNum2022 + "_" + shortStatement + "_" + choice}, inplace=True)
+                    # update multiple choices question not empty cell value to 1
+                    # data2021[col] = data2021[col].replace(pd.unique(data2021[data2021[col].notnull()][col]), 1)
+                    # rename columns name to "Q12_coding language_Python"
+                    data2021.rename(columns={col: questionNum2022 + "_" + shortStatement + "_" + choice}, inplace=True)
 
     # rename data 2020 column name to specific format
     for col in data2020:
@@ -200,21 +214,22 @@ def col_format(data2020, data2021, data2022, question2020Mul, question2021Mul, q
         # question find a match (2022 <-> 2020)
         if col in questionMap2020:
             col2022 = questionMap2020[col]
-            if col2022 in dataColNameMap:
+            if col2022 in dataColNameMap and col2022 in renameColArr2022:
                 data2020.rename(columns={col: col2022 + "_" + dataColNameMap[col2022]}, inplace=True)
         if "_" in col:
             questionNum = col.split("_", 1)[0]
             if questionNum in questionMap2020:
                 questionNum2022 = questionMap2020[questionNum]
-                shortStatement = dataColNameMap[questionNum2022]
-                choice = question2020Mul[col][0].split("- Selected Choice -")[-1].strip()
-                if "(" in choice:
-                    choice = choice.split("(")[0].strip()
+                if questionNum2022 in renameColArr2022:
+                    shortStatement = dataColNameMap[questionNum2022]
+                    choice = question2020Mul[col][0].split("- Selected Choice -")[-1].strip()
+                    if "(" in choice:
+                        choice = choice.split("(")[0].strip()
 
-                # update multiple choices question not empty cell value to 1
-                # data2020[col] = data2020[col].replace(pd.unique(data2020[data2020[col].notnull()][col]), 1)
-                # rename columns name to "Q12_coding language_Python"
-                data2020.rename(columns={col: questionNum2022 + "_" + shortStatement + "_" + choice}, inplace=True)
+                    # update multiple choices question not empty cell value to 1
+                    # data2020[col] = data2020[col].replace(pd.unique(data2020[data2020[col].notnull()][col]), 1)
+                    # rename columns name to "Q12_coding language_Python"
+                    data2020.rename(columns={col: questionNum2022 + "_" + shortStatement + "_" + choice}, inplace=True)
 
     return data2022, data2021, data2020
 
@@ -329,3 +344,38 @@ def filter_abnormal_degree(data):
     doctor_data = data[["Q8_academic dgree"]].isin(["Professional doctorate", "Doctoral degree"]).all(axis=1)
     doctor_age = data.loc[doctor_data, ["Q2_age_min"]].astype(float)
     data.drop(data.loc[doctor_age[doctor_age["Q2_age_min"]<=20].index].index, inplace=True)
+
+def GetColType_MergeQuestion(data):
+    """
+    This function is used to get the type of each column and merge the same question columns' value into one column
+    """
+    # loop all the columns
+    for col in data.columns.values:
+        if len([x for x in constant.dataColNameMap.values() if x in col]) == 0 and col != "year":
+            del data[col]
+            continue
+        # if the column name contains no "_" or 1 "_", then it is a categorical variable or a numerical variable
+        if len([ch for ch in col if ch=="_"]) <= 1:
+            # determine the type of variable by checking the column type
+            if (data[col].dtypes == "float64" or data[col].dtypes == "int64"):
+                constant.num_col.add(col)
+            if (data[col].dtypes == "object"):
+                constant.single_choice_col.add(col)
+        # if the column name contains 2 "_" and no "min/max", then it is a categorical variable with multiple values
+        if len([ch for ch in col if ch=="_"]) == 2:
+            if "min" not in col and "max" not in col:
+                new_col = col.split("_")[0]+"_"+col.split("_")[1]
+                constant.multi_choice_col.add(new_col)
+                # merge the same question columns' value into one column "value1:value2:value3"
+                if new_col not in data.columns.values:
+                    # if the question name is not in the dataframe, create a new column
+                    data[new_col] = np.where(data[col].isnull(), "", data[col].astype(str).apply(lambda x: x.strip()))
+                else:
+                    # if the question name is already in the dataframe, merge the value
+                    data[new_col] = data[new_col].astype(str) + np.where(data[col].isnull(), "", np.where(data[new_col]=="", data[col], ":"+data[col].astype(str).apply(lambda x: x.strip()))).astype(str)
+                # delete the original column
+                del data[col]
+            # if the column name contains 2 "_" and "min/max", then it is a numerical variable
+            elif "min" in col and "max" in col:
+                constant.num_col.add(col)
+    return data
