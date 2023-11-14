@@ -39,6 +39,8 @@ def data_preprocess():
 
     # classify each column of different type and merge multiple choices question column into one column
     GetColType_MergeQuestion(data)
+    # mapping 2020/2021 column value to 2022 since the values are inclusion relationship
+    col_value_mapping(data)
     # reorder dataframe columns in alphabetical order
     data = data.reindex(sorted(data.columns), axis=1)
 
@@ -379,3 +381,7 @@ def GetColType_MergeQuestion(data):
             elif "min" in col and "max" in col:
                 constant.num_col.add(col)
     return data
+
+def col_value_mapping(data):
+    # map 2020/2021 job role title to 2022 dataset
+    data["Q23_role title"].replace(constant.Q23_role_title_map, inplace=True)

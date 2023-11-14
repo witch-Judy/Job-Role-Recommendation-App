@@ -103,3 +103,13 @@ Q26_max_option = ["20+"]
 Q43_min_option = ["Once"]
 Q43_max_option = ["More than 25"]
 Q43_none_option = ["Never"]
+
+Q23_role_title_map = {
+    "Business Analyst": "Data Analyst (Business, Marketing, Financial, Quantitative, etc)",
+    "Data Analyst": "Data Analyst (Business, Marketing, Financial, Quantitative, etc)",
+    "DBA/Database Engineer": "Data Administrator",
+    "Machine Learning Engineer": "Machine Learning/ MLops Engineer",
+    "Product Manager": "Manager (Program, Project, Operations, Executive-level, etc)",
+    "Product/Project Manager": "Manager (Program, Project, Operations, Executive-level, etc)",
+    "Program/Project Manager": "Manager (Program, Project, Operations, Executive-level, etc)"
+}
