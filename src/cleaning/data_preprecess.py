@@ -365,7 +365,7 @@ def GetColType_MergeQuestion(data):
                 constant.single_choice_col.add(col)
         # if the column name contains 2 "_" and no "min/max", then it is a categorical variable with multiple values
         if len([ch for ch in col if ch=="_"]) == 2:
-            if "min" not in col and "max" not in col:
+            if "_min" not in col and "_max" not in col:
                 new_col = col.split("_")[0]+"_"+col.split("_")[1]
                 constant.multi_choice_col.add(new_col)
                 # merge the same question columns' value into one column "value1:value2:value3"
@@ -378,7 +378,7 @@ def GetColType_MergeQuestion(data):
                 # delete the original column
                 del data[col]
             # if the column name contains 2 "_" and "min/max", then it is a numerical variable
-            elif "min" in col and "max" in col:
+            else:
                 constant.num_col.add(col)
     return data
 
