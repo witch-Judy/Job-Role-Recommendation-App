@@ -6,7 +6,6 @@ import streamlit as st
 import scipy.stats as stats
 import matplotlib.pyplot as plt
 import seaborn as sns
-import plotly.express as px
 import sys
 import os
 import warnings
@@ -59,7 +58,7 @@ def vis_income():
     st.write('2. The income of each respondant is estimated as the average of the min and max of the chosen range.')
     st.write('3. The outliers who earn more than $500,000 is filtered out.')
 
-
+    
 def vis_ML():
     # read framework data from analyzed folder
     pop_framework = pd.read_csv('./data/analyzed/framework.csv', low_memory=False)
@@ -67,17 +66,34 @@ def vis_ML():
 
     st.markdown("### Change in the Composition of Popular Machine Learning Frameworks over the three years ###")
 
-    # Create pie charts for the three years
-    st.plotly_chart(
-        px.pie(pop_framework, values='2020', names='Framework', title='Popular Machine Learning Frameworks in 2020', ))
-    st.plotly_chart(
-        px.pie(pop_framework, values='2021', names='Framework', title='Popular Machine Learning Frameworks in 2021', ))
-    st.plotly_chart(
-        px.pie(pop_framework, values='2022', names='Framework', title='Popular Machine Learning Frameworks in 2022', ))
+    # Convert absolute numbers to percentages
+    for year in ['2020', '2021', '2022']:
+        total = pop_framework[year].sum()
+        pop_framework[f'{year}_pct'] = (pop_framework[year] / total) * 100
+
+    # Function to create a bar chart using Matplotlib
+    def create_percentage_bar_chart(data):
+        fig, ax = plt.subplots()
+        x = range(len(data))
+        ax.bar(x, data['2020_pct'], width=0.2, label='2020')
+        ax.bar([p + 0.2 for p in x], data['2021_pct'], width=0.2, label='2021')
+        ax.bar([p + 0.4 for p in x], data['2022_pct'], width=0.2, label='2022')
+        ax.set_xticks([p + 0.2 for p in x])
+        ax.set_xticklabels(data['Framework'])
+        plt.xticks(rotation=45)
+        plt.legend()
+        plt.title('Percentage Composition of Machine Learning Frameworks 2020-2022')
+        plt.ylabel('Percentage')
+        plt.xlabel('Frameworks')
+        return fig
+
+    # Create a percentage bar chart
+    st.pyplot(create_percentage_bar_chart(pop_framework))
 
     # disclaimer
     st.write('Disclaimer')
     st.write('1. Top 6 most used Machine Learning frameworks are shown and the rest are combined as Others')
+
 
 
 def vis_Jobtitle():
