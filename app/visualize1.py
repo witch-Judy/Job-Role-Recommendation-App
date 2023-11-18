@@ -186,29 +186,10 @@ def gen_dist():
     else:
         years_list2 = list(selected_years_range2)
     years3 = list(years_list2)
-    plot_gender_distribution(col1, years3)# observation and disclaimer
-    show_description(col2, "Gender Distribution")
-
-def show_description(col, title):
-    col.empty()
-    df_observation = pd.read_csv("./docs/Exploratory data analysis observations.csv")
-    df_disclaimer = pd.read_csv("./docs/Exploratory data analysis disclaimer.csv")
-    doc_list = [df_observation, df_disclaimer]
-    doc_header = ["Observation", "Disclaimer"]
-    # loop all the content(observation/disclaimer) in that column
-    for idx in range(len(doc_header)):
-        row = 0
-        col.subheader(doc_header[idx])
-        while True:
-            if row == doc_list[idx].shape[0]:
-                break
-            elif pd.notna(doc_list[idx].loc[row, title]):
-                # print observation
-                obs_str = str(row+1) + ". " + doc_list[idx].loc[row, title]
-                col.write(obs_str)
-            else:
-                break
-            row += 1
+    plot_gender_distribution(years3)
+    st.write('Disclaimer')
+    st.write(
+        "Top 10 countries are selected, based on the number of responders in the dataset, we give you the top five developed and developing countries with the highest respective numbers.")
 
 
 import streamlit as st
