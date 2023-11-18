@@ -14,7 +14,7 @@ import pandas as pd
 import os
 
 
-def plot_language_trend(country):
+def plot_language_trend(st_col, country):
     """
     Plot the trend of programming languages used in a specific country across 2020-2022.
 
@@ -81,7 +81,7 @@ def plot_language_trend(country):
     plt.xticks(np.arange(len(top_languages)) + bar_width, [lang.split("_")[-1] for lang in top_languages], rotation=45)
     plt.legend()
     plt.tight_layout()
-    st.pyplot(plt.gcf())
+    st_col.pyplot(plt.gcf())
 
 
 # Test the final  function with updated top languages for USA

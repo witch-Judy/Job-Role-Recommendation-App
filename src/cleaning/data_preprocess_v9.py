@@ -8,6 +8,16 @@ import os
 import numpy as np
 import joblib
 
+# ---------------------summary ---------------------
+
+# from V8 
+
+# 1. drop the columns that have 'Choose not to answer' more than 50% (more than 50% empty)
+# 2. drop the rows(repondants) that did not answer to more than 30% of the questions'
+
+# ---------------------------------------------------
+
+
 # Get the absolute path of the current script
 path = "../../data/processed/Data_Preprocess_v8_simplified.csv"
 data = pd.read_csv(path, low_memory=False)

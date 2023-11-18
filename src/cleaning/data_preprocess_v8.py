@@ -1,12 +1,9 @@
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.preprocessing import MultiLabelBinarizer, OneHotEncoder, LabelEncoder
-from sklearn.compose import ColumnTransformer
-from sklearn.decomposition import PCA
-from sklearn.neighbors import NearestNeighbors, KNeighborsClassifier
-from sklearn.pipeline import Pipeline, FeatureUnion
+
+# ---------------summary ---------------------
+# 1. drop job roles that are less than 100
+# 2. drop 'Other' job roles
+
 
 path = "../../data/processed/Data_Preprocess_v7_cleaned.csv"
 df = pd.read_csv(path, low_memory=False)

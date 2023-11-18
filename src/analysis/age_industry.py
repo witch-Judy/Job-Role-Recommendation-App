@@ -14,7 +14,7 @@ import streamlit as st
 
 
 
-def plot_industry_distribution(age_range, years):
+def plot_industry_distribution(st_col, age_range, years):
     """
     Use Seaborn to plot a histogram of the distribution of different industries based on a given age group and year.
 
@@ -46,6 +46,6 @@ def plot_industry_distribution(age_range, years):
     plt.ylabel('Count')
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
-    st.pyplot(plt.gcf())
+    st_col.pyplot(plt.gcf())
 # to use this function
 # plot_industry_distribution('30-34', [2021])

@@ -20,7 +20,7 @@ final_data_path = os.path.join(loc, "gender_distribution.csv")
 final_data = pd.read_csv(final_data_path)
 
 
-def plot_gender_distribution(years):
+def plot_gender_distribution(st_col, years):
     """
     Plot the gender distribution of different country across different years.
     Parameters:
@@ -109,7 +109,7 @@ def plot_gender_distribution(years):
     # Set a dynamic title based on the years
     dynamic_title = f"the gender percentage of different countries in {', '.join(map(str, years))}"
     plt.suptitle(dynamic_title, fontsize=18, y=0.98)
-    st.pyplot(plt.gcf())
+    st_col.pyplot(plt.gcf())
 
 
 # plot_gender_distribution([2020, 2021,2022])

@@ -50,7 +50,7 @@ def compute_salary_midpoint(salary_range):
         return None
 
 
-def plot_experience_vs_compensation(years):
+def plot_experience_vs_compensation(st_col, years):
     """
     Updated function to use the new compute_salary_midpoint_v2 function.
     """
@@ -78,7 +78,7 @@ def plot_experience_vs_compensation(years):
     plt.ylim(0, 250000)
     plt.xticks(rotation=45)
     plt.tight_layout()
-    st.pyplot(plt.gcf())
+    st_col.pyplot(plt.gcf())
 
 
 # # For demonstration, plot the relationship for the year 2020
