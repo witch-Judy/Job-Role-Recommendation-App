@@ -192,6 +192,28 @@ def gen_dist():
         "Top 10 countries are selected, based on the number of responders in the dataset, we give you the top five developed and developing countries with the highest respective numbers.")
 
 
+def show_description(col, title):
+    col.empty()
+    df_observation = pd.read_csv("./docs/Exploratory data analysis observations.csv")
+    df_disclaimer = pd.read_csv("./docs/Exploratory data analysis disclaimer.csv")
+    doc_list = [df_observation, df_disclaimer]
+    doc_header = ["Observation", "Disclaimer"]
+    # loop all the content(observation/disclaimer) in that column
+    for idx in range(len(doc_header)):
+        row = 0
+        col.subheader(doc_header[idx])
+        while True:
+            if row == doc_list[idx].shape[0]:
+                break
+            elif pd.notna(doc_list[idx].loc[row, title]):
+                # print observation
+                obs_str = str(row+1) + ". " + doc_list[idx].loc[row, title]
+                col.write(obs_str)
+            else:
+                break
+            row += 1
+
+
 import streamlit as st
 st.set_page_config(layout="wide")
 
